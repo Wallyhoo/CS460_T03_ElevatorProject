@@ -69,18 +69,6 @@ public final class Message {
         return new Message(wire[0] & 0xFF, wire[1] & 0xFF, Arrays.copyOfRange(wire, 2, SIZE));
     }
 
-    // Reads exactly one 8-byte message from a socket stream (blocks until it arrives)
-    public static Message read(DataInputStream in) throws IOException {
-        byte[] wire = new byte[SIZE];
-        in.readFully(wire);
-        return fromBytes(wire);
-    }
-
-    // Writes this message's 8 bytes to a socket stream (caller flushes).
-    public void write(DataOutputStream out) throws IOException {
-        out.write(toBytes());
-    }
-
     // Encodes to the 8-byte wire form
     public byte[] toBytes() {
         byte[] wire = new byte[SIZE];
