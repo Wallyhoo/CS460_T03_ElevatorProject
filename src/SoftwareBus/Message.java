@@ -1,5 +1,8 @@
 package SoftwareBus;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -10,7 +13,7 @@ import java.util.Arrays;
  * +--------+-----------+-------------------+
  * | TOPIC  | SUBTOPIC  |   BODY (6 bytes)  |
  * +--------+-----------+-------------------+
- * <pre>
+ * </pre>
  *
  * Topic and subtopic are unsigned (0-255). Subtopic 0 means "all elevators".
  * The body is 6 bytes; most messages will most likely just carry a
@@ -66,6 +69,18 @@ public final class Message {
         return new Message(wire[0] & 0xFF, wire[1] & 0xFF, Arrays.copyOfRange(wire, 2, SIZE));
     }
 
+    // Reads exactly one 8-byte message from a socket stream (blocks until it arrives)
+    public static Message read(DataInputStream in) throws IOException {
+        byte[] wire = new byte[SIZE];
+        in.readFully(wire);
+        return fromBytes(wire);
+    }
+
+    // Writes this message's 8 bytes to a socket stream (caller flushes).
+    public void write(DataOutputStream out) throws IOException {
+        out.write(toBytes());
+    }
+
     // Encodes to the 8-byte wire form
     public byte[] toBytes() {
         byte[] wire = new byte[SIZE];
@@ -91,6 +106,18 @@ public final class Message {
         return v;
     }
 
+    /**
+     * True if this message should be delivered to a subscription on
+     * (topic, subtopic). Topics must match exactly; subtopic 0 on either side
+     * is a wildcard and will deliver messages from all matching subtopics
+     * (subscribing with 0 receives every subtopic, and a
+     * message published with 0 reaches subscribers of any subtopic).
+     */
+    public boolean matches(int topic, int subtopic) {
+        return this.topic == topic
+                && (subtopic == Topics.ALL || this.subtopic == Topics.ALL || this.subtopic == subtopic);
+    }
+
     private static int checkByte(String name, int v) {
         if (v < 0 || v > 255) {
             throw new IllegalArgumentException(name + " must be 0-255, got " + v);
@@ -112,6 +139,6 @@ public final class Message {
 
     @Override
     public String toString() {
-    return String.valueOf(0);
+        return "[" + Topics.topicName(topic) + " | " + Topics.subtopicName(subtopic) + " | " + value() + "]";
     }
 }
