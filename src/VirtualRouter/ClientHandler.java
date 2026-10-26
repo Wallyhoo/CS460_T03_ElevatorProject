@@ -1,5 +1,7 @@
 package VirtualRouter;
 
+import SoftwareBus.Message;
+
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -8,40 +10,36 @@ public class ClientHandler implements Runnable{
 
     private final Socket socket;
     private final RoutingHandler router;
-    private PrintWriter out;
 
-    public ClientHandler(Socket socket, RoutingHandler router) {
+    private final InputStream input;
+    private final OutputStream output;
+
+    public ClientHandler(Socket socket, RoutingHandler router) throws IOException {
         this.socket = socket;
         this.router = router;
+
+        this.input = socket.getInputStream();
+        this.output = socket.getOutputStream();
     }
 
     @Override
     public void run() {
-        try (Socket clientSocket = socket;
-             BufferedReader in = new BufferedReader(
-                     new InputStreamReader(
-                             socket.getInputStream(),
-                             StandardCharsets.UTF_8
-                     )
-             );
-             PrintWriter writer = new PrintWriter(
-                     new OutputStreamWriter(
-                             socket.getOutputStream(),
-                             StandardCharsets.UTF_8
-                     ),
-                     true
-             )) {
-            this.out = writer;
+        router.addClient(this);
 
-            // Register client on router
-            router.addClient(this);
-            String clientName = socket.getRemoteSocketAddress().toString(); // May want to use a different id system
+        try (socket) {
 
-            // Start listening for messages
-            String message;
-            while ((message = in.readLine()) != null) { // Readline currently assumes a whole line is sent. May want to make this read a specific number of bytes instead.
-                System.out.println(clientName + ": " + message);
-                // Forward
+            while (true) {
+                byte[] data = input.readNBytes(Message.SIZE);
+
+                if (data.length == 0) {
+                    break;
+                }
+
+                if (data.length != Message.SIZE) {
+                    throw new EOFException("Incomplete message received");
+                }
+
+                Message message = Message.fromBytes(data);
                 router.broadcast(message, this);
             }
         } catch (IOException e) {
@@ -52,9 +50,15 @@ public class ClientHandler implements Runnable{
         }
     }
 
-    public synchronized void send(String message) {
-        if (out != null) {
-            out.println(message);
+    public synchronized void send(byte[] data) throws IOException {
+        output.write(data);
+        output.flush();
+    }
+
+    public void disconnect() {
+        try {
+            socket.close();
+        } catch (IOException ignored) {
         }
     }
 }
