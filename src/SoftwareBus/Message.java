@@ -1,5 +1,8 @@
 package SoftwareBus;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -10,7 +13,7 @@ import java.util.Arrays;
  * +--------+-----------+-------------------+
  * | TOPIC  | SUBTOPIC  |   BODY (6 bytes)  |
  * +--------+-----------+-------------------+
- * <pre>
+ * </pre>
  *
  * Topic and subtopic are unsigned (0-255). Subtopic 0 means "all elevators".
  * The body is 6 bytes; most messages will most likely just carry a
@@ -91,6 +94,18 @@ public final class Message {
         return v;
     }
 
+    /**
+     * True if this message should be delivered to a subscription on
+     * (topic, subtopic). Topics must match exactly; subtopic 0 on either side
+     * is a wildcard and will deliver messages from all matching subtopics
+     * (subscribing with 0 receives every subtopic, and a
+     * message published with 0 reaches subscribers of any subtopic).
+     */
+    public boolean matches(int topic, int subtopic) {
+        return this.topic == topic
+                && (subtopic == Topics.ALL || this.subtopic == Topics.ALL || this.subtopic == subtopic);
+    }
+
     private static int checkByte(String name, int v) {
         if (v < 0 || v > 255) {
             throw new IllegalArgumentException(name + " must be 0-255, got " + v);
@@ -112,6 +127,6 @@ public final class Message {
 
     @Override
     public String toString() {
-    return String.valueOf(0);
+        return "[" + Topics.topicName(topic) + " | " + Topics.subtopicName(subtopic) + " | " + value() + "]";
     }
 }
