@@ -1,5 +1,8 @@
 package VirtualRouter;
 
+import SoftwareBus.Message;
+
+import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,10 +17,20 @@ public class RoutingHandler {
         clients.remove(client);
     }
 
-    public void broadcast(String message, ClientHandler sender) {
+    public void broadcast(Message message, ClientHandler sender) {
+
+        byte[] data = message.toBytes();
+
         for (ClientHandler client : clients) {
-            if (client != sender) {
-                client.send(message);
+            if (client == sender) {
+                continue;
+            }
+
+            try {
+                client.send(data);
+            } catch (IOException e) {
+                removeClient(client);
+                client.disconnect();
             }
         }
     }
