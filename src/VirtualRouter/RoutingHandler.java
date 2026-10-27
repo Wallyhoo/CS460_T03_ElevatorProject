@@ -1,6 +1,6 @@
 package VirtualRouter;
 
-import SoftwareBus.Message;
+import Utilities.Message;
 
 import java.io.IOException;
 import java.util.Set;

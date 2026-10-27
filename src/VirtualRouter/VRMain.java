@@ -1,11 +1,20 @@
 package VirtualRouter;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class VRMain {
 
     public static void main(String[] args) throws IOException {
         int port = 5555; // Default port
+
+        try {
+            InetAddress localHost = InetAddress.getLocalHost();
+            System.out.println("Local IP Address: " + localHost.getHostAddress());
+        } catch (UnknownHostException e) {
+            System.err.println("Could not resolve local host address: " + e.getMessage());
+        }
 
         if (args.length > 0) {
             try {
@@ -15,7 +24,7 @@ public class VRMain {
             }
         }
 
-        Server server = new Server(port); //Using a temp port for now. Eventually parse port from args
+        Server server = new Server(port);
         server.start();
     }
 }

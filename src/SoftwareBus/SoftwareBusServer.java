@@ -1,21 +1,42 @@
 package SoftwareBus;
 
+import Utilities.Message;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+
 public class SoftwareBusServer {
 
-    public static SoftwareBusServer start(int listenPort, String routerHost, int routerPort) {
-        return new SoftwareBusServer();   // TODO: open server socket, start router link
+    private final int listenPort;
+    private final MessageBus bus;
+
+    public SoftwareBusServer(int listenPort, MessageBus bus) {
+        this.listenPort = listenPort;
+        this.bus = bus;
     }
 
-    public static SoftwareBusServer start(int listenPort) {
-        return start(listenPort, null, 0);   // no router
-    }
+    public void start() throws IOException {
+        try (ServerSocket serverSocket = new ServerSocket(listenPort)) {
+            System.out.println("Server listening on port " + listenPort);
 
-    //TODO: replace this with actual implementation, this is only here so that it will routerlink will compile
-    String name() {
-        return "Bus";
-    }
+            int id = 0;
 
-    void publishFromRouter(Message m) {
-        // TODO: deliver m to local subscribers
+            // Listen loop
+            while (true) {
+                Socket socket = serverSocket.accept();
+
+                System.out.println("Client connected: " + socket.getRemoteSocketAddress());
+
+                // Create a new client and attach them to the internal bus
+                SoftwareBusClient client = new SoftwareBusClient(socket, bus, id);
+
+                // Launch a new thread for the client
+                Thread thread = new Thread(client);
+                thread.start();
+
+                id++;
+            }
+        }
     }
 }

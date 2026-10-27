@@ -1,8 +1,8 @@
 package SoftwareBus;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import Utilities.Message;
+
+import java.io.*;
 
 /**
  * The wire protocol, the shared contract between the SoftwareBusClient
@@ -37,6 +37,7 @@ public class Protocol {
     public static final byte UNSUBSCRIBE = 0x03;
     public static final byte PUBLISH     = 0x04;
     public static final byte GET         = 0x05;
+    public static final byte NO_MESSAGE  = 0x06;
 
     // Responses (bus -> client)
     public static final byte ACK        = (byte) 0x80;
@@ -51,15 +52,25 @@ public class Protocol {
     public static final byte ERR_ALREADY_REGISTERED = 3;
 
     // Reads exactly one 8-byte message from a socket stream (blocks until it arrives)
-    public static Message readMessage(DataInputStream in) throws IOException {
-        byte[] wire = new byte[Message.SIZE];
-        in.readFully(wire);
+    public static Message readMessage(InputStream in) throws IOException {
+        byte[] wire = in.readNBytes(Message.SIZE);
+
+        // Format checks:
+        if (wire.length == 0) {
+            return null;
+        }
+
+        if (wire.length != Message.SIZE) {
+            throw new EOFException("Incomplete message received");
+        }
+
         return Message.fromBytes(wire);
     }
 
     // Writes a message's 8 bytes to a socket stream (caller flushes).
-    public static void writeMessage(DataOutputStream out, Message m) throws IOException {
+    public static void writeMessage(OutputStream out, Message m) throws IOException {
         out.write(m.toBytes());
+        out.flush();
     }
 
     // Human-readable description of an error code

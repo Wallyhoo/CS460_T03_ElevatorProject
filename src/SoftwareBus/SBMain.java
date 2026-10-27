@@ -15,16 +15,26 @@ package SoftwareBus;
 public class SBMain {
 
     public static void main(String[] args) throws Exception {
+        MessageBus bus = new MessageBus();
+        SoftwareBusServer server;
+        RouterLink link;
+
         if (args.length != 1 && args.length != 3) {
             System.err.println("Usage: java SoftwareBus.SBMain <listenPort> [routerHost routerPort]");
             System.exit(1);
         }
         int listenPort = Integer.parseInt(args[0]);
         if (args.length == 3) {
-            SoftwareBusServer.start(listenPort, args[1], Integer.parseInt(args[2]));
+            server = new SoftwareBusServer(listenPort, bus);
+            link = new RouterLink(bus, args[1], Integer.parseInt(args[2]));
+
+            Thread thread = new Thread(link);
+            thread.start();
+
+            server.start();
         } else {
-            SoftwareBusServer.start(listenPort);
+            server = new SoftwareBusServer(listenPort, bus);
+            server.start();
         }
-        // The bus runs on its own thread
     }
 }
