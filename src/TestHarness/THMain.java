@@ -41,8 +41,8 @@ public class THMain {
             } while (topic2 == topic1);
 
             // Generate random subtopics (1 or 2)
-            int subtopic1 = random.nextInt(2) + 1;
-            int subtopic2 = random.nextInt(2) + 1;
+            int subtopic1 = random.nextInt(1) + 1;
+            int subtopic2 = random.nextInt(1) + 1;
 
             int[][] subscriptions = {
                     {topic1, subtopic1},
