@@ -33,11 +33,11 @@ public class THMain {
             System.out.println("Connected to bus at " + ip + ":" + port);
 
             // Generate two distinct random topics
-            int topic1 = random.nextInt(3) + 6;
+            int topic1 = random.nextInt(3) + 7;
             int topic2;
 
             do {
-                topic2 = random.nextInt(3) + 6;
+                topic2 = random.nextInt(3) + 7;
             } while (topic2 == topic1);
 
             // Generate random subtopics (1 or 2)
