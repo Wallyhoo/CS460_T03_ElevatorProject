@@ -27,6 +27,8 @@ public class SoftwareBusClient implements Runnable{
 
     private final ConcurrentHashMap<TopicKey, BlockingQueue<Message>> topicQueues = new ConcurrentHashMap<>();
 
+    private boolean running = true;
+
     public SoftwareBusClient(Socket socket, MessageBus bus, int id) throws IOException {
         this.socket = socket;
         this.bus = bus;
@@ -43,7 +45,7 @@ public class SoftwareBusClient implements Runnable{
         bus.addClient(this);
 
         try (socket) {
-            while (true) {
+            while (running) {
                 try {
                     Message message = Protocol.readMessage(in);
                     // Handle subscription methods here:
@@ -154,7 +156,14 @@ public class SoftwareBusClient implements Runnable{
     }
 
     //@Override
-    public void close() {
-        // TODO: close socket
+    public void close() throws IOException {
+        // kill while loop
+        running = false;
+        // kill i/o streams
+        out.flush();
+        out.close();
+        in.close();
+        // kill socket
+        socket.close();
     }
 }
