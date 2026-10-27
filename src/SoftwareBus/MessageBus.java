@@ -26,6 +26,12 @@ public class MessageBus {
     }
 
     public void broadcastFromClient(Message message, SoftwareBusClient sender) {
+        int topic = message.topic();
+        int subtopic = message.subtopic();
+        long value = message.value();
+
+        System.out.printf("Broadcast from client: Topic %d, Subtopic %d, Value %d%n", topic, subtopic, value);
+
         for (SoftwareBusClient client : clients) {
             if (client == sender) {
                 continue;
@@ -40,6 +46,12 @@ public class MessageBus {
     }
 
     public void broadcastFromRouter(Message message, RouterLink sender) {
+        int topic = message.topic();
+        int subtopic = message.subtopic();
+        long value = message.value();
+
+        System.out.printf("Broadcast from router: Topic %d, Subtopic %d, Value %d%n", topic, subtopic, value);
+
         for (SoftwareBusClient client : clients) {
             client.pushMessage(message);
         }

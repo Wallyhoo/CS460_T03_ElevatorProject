@@ -1,9 +1,9 @@
 package SoftwareBus;
 
 import Utilities.Message;
+import Utilities.Protocol;
 
 import java.io.*;
-import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;

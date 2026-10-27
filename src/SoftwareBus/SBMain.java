@@ -1,5 +1,8 @@
 package SoftwareBus;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 /**
  * Runs a Software Bus as a stand-alone
  *
@@ -18,6 +21,13 @@ public class SBMain {
         MessageBus bus = new MessageBus();
         SoftwareBusServer server;
         RouterLink link;
+
+        try {
+            InetAddress localHost = InetAddress.getLocalHost();
+            System.out.println("Local IP Address: " + localHost.getHostAddress());
+        } catch (UnknownHostException e) {
+            System.err.println("Could not resolve local host address: " + e.getMessage());
+        }
 
         if (args.length != 1 && args.length != 3) {
             System.err.println("Usage: java SoftwareBus.SBMain <listenPort> [routerHost routerPort]");

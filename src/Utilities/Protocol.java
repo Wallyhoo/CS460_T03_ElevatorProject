@@ -1,6 +1,4 @@
-package SoftwareBus;
-
-import Utilities.Message;
+package Utilities;
 
 import java.io.*;
 

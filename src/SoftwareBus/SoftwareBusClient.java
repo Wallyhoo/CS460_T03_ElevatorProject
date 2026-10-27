@@ -1,6 +1,7 @@
 package SoftwareBus;
 
 import Utilities.Message;
+import Utilities.Protocol;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,10 +49,13 @@ public class SoftwareBusClient implements Runnable{
                     // Handle subscription methods here:
                     if (message.topic() == Protocol.REGISTER) {
                         // register client id with bus
+                        System.out.printf("Received REGISTER from client %d%n", id);
                     } else if (message.topic() == Protocol.SUBSCRIBE) {
                         // parse subtopic byte as topic and last byte of body as subtopic
                         int topic = message.subtopic();
                         int subtopic = message.body()[Message.BODY_SIZE - 1] & 0xFF;
+
+                        System.out.printf("Received SUBSCRIBE from client %d: Topic %d, Subtopic %d%n", id, topic, subtopic);
 
                         subscribe(topic, subtopic);
 
@@ -60,12 +64,16 @@ public class SoftwareBusClient implements Runnable{
                         int topic = message.subtopic();
                         int subtopic = message.body()[Message.BODY_SIZE - 1] & 0xFF;
 
+                        System.out.printf("Received UNSUBSCRIBE from client %d: Topic %d, Subtopic %d%n", id, topic, subtopic);
+
                         unsubscribe(topic, subtopic);
 
                     } else if (message.topic() == Protocol.GET) {
                         // Parse the message and call the getMessage function
                         int topic = message.subtopic();
                         int subtopic = message.body()[Message.BODY_SIZE - 1] & 0xFF;
+
+                        System.out.printf("Received GET from client %d: Topic %d, Subtopic %d%n", id, topic, subtopic);
 
                         getMessage(topic, subtopic);
 
