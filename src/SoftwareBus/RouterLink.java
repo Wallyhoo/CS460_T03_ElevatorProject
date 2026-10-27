@@ -39,7 +39,12 @@ public class RouterLink implements Runnable {
     }
 
     public void send(Message m) {
+        int topic = m.topic();
+        int subtopic = m.subtopic();
+        long value = m.value();
+
         if (m != null) {
+            System.out.printf("Pushing Message: Topic %d, Subtopic %d, Value %d%n", topic, subtopic, value);
             sendQueue.offer(m);
         }
     }
@@ -48,28 +53,57 @@ public class RouterLink implements Runnable {
     public void run() {
         bus.addLink(this);
 
+        Thread writerThread = null;
+
         try {
             socket = new Socket(host, port);
 
             out = socket.getOutputStream();
             in = socket.getInputStream();
 
-            while (running && !socket.isClosed()) {
-                // Flush the message queue
-                while (!sendQueue.isEmpty()) {
-                    Message m = sendQueue.poll();
-                    if (m != null) {
+            writerThread = new Thread(() -> {
+                try {
+                    while (running && !socket.isClosed()) {
+                        // wait for a message
+                        Message m = sendQueue.take();
+
+                        System.out.printf("Sending to router: Topic %d, Subtopic %d, Value %d%n", m.topic(), m.subtopic(), m.value());
                         Protocol.writeMessage(out, m);
                     }
-                }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                } catch (IOException e) {
+                    System.out.println("Router write error: " + e.getMessage());
 
+                    // Unblock the reader thread too
+                    try {
+                        socket.close();
+                    } catch (IOException ignored) {}
+                }
+            });
+
+            writerThread.start();
+
+            while (running && !socket.isClosed()) {
                 // Read and broadcast incoming messages
                 Message m = Protocol.readMessage(in);
+
+                if (m == null) {
+                    break;
+                }
+
                 bus.broadcastFromRouter(m, this);
             }
         } catch (IOException e) {
             System.out.println("Router connection error: " + e.getMessage());
         } finally {
+            running = false;
+
+            // Interrupt the writer if blocked on take()
+            if (writerThread != null) {
+                writerThread.interrupt();
+            }
+
             // Remove client upon disconnect
             bus.removeLink(this);
         }

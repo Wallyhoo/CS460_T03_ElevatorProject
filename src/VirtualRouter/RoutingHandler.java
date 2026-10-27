@@ -21,6 +21,8 @@ public class RoutingHandler {
 
         byte[] data = message.toBytes();
 
+        System.out.printf("Broadcasting message%n");
+
         for (ClientHandler client : clients) {
             if (client == sender) {
                 continue;
