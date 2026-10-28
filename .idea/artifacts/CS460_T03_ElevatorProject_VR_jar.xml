@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="CS460_T03_ElevatorProject_VR:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/CS460_T03_ElevatorProject_VR_jar</output-path>
+    <root id="archive" name="CS460_T03_ElevatorProject.jar">
+      <element id="module-output" name="CS460_T03_ElevatorProject" />
+    </root>
+  </artifact>
+</component>

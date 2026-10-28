@@ -103,14 +103,12 @@ public class SoftwareBusClient implements Runnable{
                 key,
                 k -> new ArrayBlockingQueue<>(MAX_QUEUE_SIZE)
         );
-        sendTopic(Protocol.SUBSCRIBE, topic, subtopic);
     }
 
     private void unsubscribe(int topic, int subtopic) {
         TopicKey key = new TopicKey(topic, subtopic);
 
         topicQueues.remove(key);
-        sendTopic(Protocol.UNSUBSCRIBE, topic, subtopic);
     }
 
     private void publish(Message m) {
@@ -164,16 +162,4 @@ public class SoftwareBusClient implements Runnable{
         in.close();
         socket.close(); // kill socket
     }
-
-    // sends subscribe or unsubscribe
-    private void sendTopic(byte op, int topic, int subtopic) {
-        try {
-            out.write(op);
-            out.write(topic);
-            out.write(subtopic);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 }

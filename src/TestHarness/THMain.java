@@ -103,7 +103,7 @@ public class THMain {
                 }
 
                 // Wait 250-1000ms before next iteration
-                Thread.sleep(250 + random.nextInt(751));
+                Thread.sleep(10000 + random.nextInt(1001));
             }
         }
     }
