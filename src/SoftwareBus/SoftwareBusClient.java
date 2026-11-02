@@ -79,6 +79,9 @@ public class SoftwareBusClient implements Runnable{
 
                         getMessage(topic, subtopic);
 
+                    } else if (Protocol.isCommand(message.topic())) {
+                        System.out.printf("Unknown command 0x%X from client %d%n", message.topic(), id);
+
                     } else {
                         // If not a special message, broadcast to all other connections
                         publish(message);
