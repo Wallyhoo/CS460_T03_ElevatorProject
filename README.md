@@ -206,3 +206,5 @@ These are tracked by the bus team.
 1. **Subscribing with subtopic `ALL` only catches messages published with subtopic `ALL`.** It doesn't yet mean "any elevator". As a workaround you can subscribe to each elevator you care about (`ELEVATOR_1` … `ELEVATOR_4`) separately.
 2. **The bus prints a stack trace whenever a connection closes.** You'll see one each time a test closes a socket. It's harmless and the bus keeps running.
 3. **A bus can't be stopped.** It runs until your program exits. As a temporary workaround, start it once per program or test class, and use a separate port for tests.
+4. **There is a socket timeout exception when reading in messages that can occur when attempting to run the TestHarness**
+5. **A potential Null Pointer exception can occur with the SoftwareBusClient, if these occur under normal operating conditions is still an ongoing investigation**
