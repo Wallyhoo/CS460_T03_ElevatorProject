@@ -199,12 +199,37 @@ public class DoorControllerMain {
 }
 ```
 
-## 5. Known issues that we haven't fixed yet
+## 5. Proper port usage and how to the test harness connects
+
+This is how the test harness connects to the software bus if it is used for generating traffic or if one is testing this program on its own 
+
+If testing this program the order of program launched should be:
+- Virtual Router (VRMain), by default this is on port 5555
+- Two Software Buses (SBMain), see below on how to launch the buses
+- Test Harness (THMain), launch with arguments <ip> <port> (i.e. java THMain localhost 6000)
+
+Software bus should be launched as: java SoftwareBus.SBMain &lt;listenPort&gt; [routerHost routerPort], some examples include:
+- java SoftwareBus.SBMain 6000                     stand-alone bus, no router 
+- java SoftwareBus.SBMain 6000 localhost 5000      bus + router on this machine 
+- java SoftwareBus.SBMain 6000 192.168.8.10 5000   router on another machine 
+- Your other bus should be on another port, i.e. java SoftwareBus.SBMain 6001 localhost 5000 if hosted locally
+
+An example of a proper way of running this program:
+- java VirtualRouter.VRMain 5000
+- java SBMain 6000 localhost 5000
+- java SBMain 6001 localhost 5000
+- java TestHarness.THMain localhost 6000
+This is how it is run locally, but the port rules still apply when running it between machines or in implementation in another program
+
+**IMPORTANT NOTES!** TestHarness connects to the **SoftwareBus** port, not the VirtualRouter. 
+If you connect to the router it will connect and run however the socket will quickly time out. 
+Where the VirtualRouter should not be used outside of isolated testing, keep this in mind if using the TestHarness
+
+## 6. Known issues that we haven't fixed yet
 
 These are tracked by the bus team.
 
 1. **Subscribing with subtopic `ALL` only catches messages published with subtopic `ALL`.** It doesn't yet mean "any elevator". As a workaround you can subscribe to each elevator you care about (`ELEVATOR_1` … `ELEVATOR_4`) separately.
 2. **The bus prints a stack trace whenever a connection closes.** You'll see one each time a test closes a socket. It's harmless and the bus keeps running.
 3. **A bus can't be stopped.** It runs until your program exits. As a temporary workaround, start it once per program or test class, and use a separate port for tests.
-4. **There is a socket timeout exception when reading in messages that can occur when attempting to run the TestHarness**
-5. **A potential Null Pointer exception can occur with the SoftwareBusClient, if these occur under normal operating conditions is still an ongoing investigation**
+4. **A potential Null Pointer exception can occur with the SoftwareBusClient, if these occur under normal operating conditions is still an ongoing investigation**
