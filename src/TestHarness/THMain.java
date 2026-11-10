@@ -49,6 +49,22 @@ public class THMain {
                     {topic2, subtopic2}
             };
 
+            // Register with bus:
+            int id = -1;
+
+            Protocol.writeMessage(out, Message.of(Protocol.REGISTER, 0, 0));
+
+
+            Message ack = null;
+
+            while (ack == null) {
+                ack = Protocol.readMessage(in);
+            }
+
+            id = ack.subtopic();
+
+            System.out.println("My ID is " + id);
+
             // Subscribe to both topics
             for (int[] sub : subscriptions) {
 

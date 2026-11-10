@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class RoutingHandler {
+    private final DeviceRegister deviceRegister = new DeviceRegister();
+
     private final Set<ClientHandler> clients = ConcurrentHashMap.newKeySet();
 
     public void addClient(ClientHandler client) {
@@ -35,5 +37,13 @@ public class RoutingHandler {
                 client.disconnect();
             }
         }
+    }
+
+    public int registerDevice() {
+        return deviceRegister.register();
+    }
+
+    public void deregisterDevice(int id) {
+        deviceRegister.deregister(id);
     }
 }

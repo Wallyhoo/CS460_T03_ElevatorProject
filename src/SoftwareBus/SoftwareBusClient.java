@@ -19,7 +19,7 @@ public class SoftwareBusClient implements Runnable{
     private final InputStream in;
     private final OutputStream out;
 
-    private final int id;
+    private int id = 0;
 
     private record TopicKey(int topic, int subtopic) {}
 
@@ -29,14 +29,12 @@ public class SoftwareBusClient implements Runnable{
 
     private boolean running = true;
 
-    public SoftwareBusClient(Socket socket, MessageBus bus, int id) throws IOException {
+    public SoftwareBusClient(Socket socket, MessageBus bus) throws IOException {
         this.socket = socket;
         this.bus = bus;
 
         this.in = socket.getInputStream();
         this.out = socket.getOutputStream();
-
-        this.id = id;
     }
 
     // Runs the listening loop for the connected client
@@ -50,7 +48,11 @@ public class SoftwareBusClient implements Runnable{
                     Message message = Protocol.readMessage(in);
                     // Handle subscription methods here:
                     if (message.topic() == Protocol.REGISTER) {
-                        // register client id with bus
+                        // Request a new id from the router.
+                        this.id = register();
+
+                        // Tell the client what its id is
+                        Protocol.writeMessage(out, Message.of(Protocol.REGISTER, id, 0));
                         System.out.printf("Received REGISTER from client %d%n", id);
                     } else if (message.topic() == Protocol.SUBSCRIBE) {
                         // parse subtopic byte as topic and last byte of body as subtopic
@@ -112,6 +114,10 @@ public class SoftwareBusClient implements Runnable{
         TopicKey key = new TopicKey(topic, subtopic);
 
         topicQueues.remove(key);
+    }
+
+    private int register() {
+        return 0;
     }
 
     private void publish(Message m) {

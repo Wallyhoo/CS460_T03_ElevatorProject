@@ -1,6 +1,7 @@
 package VirtualRouter;
 
 import Utilities.Message;
+import Utilities.Protocol;
 
 import java.io.*;
 import java.net.Socket;
@@ -39,7 +40,14 @@ public class ClientHandler implements Runnable{
                 }
 
                 Message message = Message.fromBytes(data);
-                router.broadcast(message, this);
+
+                // Check if message is registration:
+                if (message.topic() == Protocol.REGISTER) {
+                    long requestID = message.value();
+                    int id = router.registerDevice();
+                } else {
+                    router.broadcast(message, this);
+                }
             }
         } catch (IOException e) {
             System.out.println("Client connection error: " + e.getMessage());
