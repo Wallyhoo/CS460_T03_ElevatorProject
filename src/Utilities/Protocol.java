@@ -1,6 +1,7 @@
 package Utilities;
 
 import java.io.*;
+import java.util.HexFormat;
 
 /**
  * The wire protocol, the shared contract between the SoftwareBusClient
@@ -47,7 +48,19 @@ public class Protocol {
 
     // Reads exactly one 8-byte message from a socket stream (blocks until it arrives)
     public static Message readMessage(InputStream in) throws IOException {
+        // debug trace prints
+//        System.out.printf("[%tT.%<tL] [%s] waiting to read...%n",
+//                System.currentTimeMillis(),
+//                Thread.currentThread().getName());
+
         byte[] wire = in.readNBytes(Message.SIZE);
+
+        // debug trace prints
+//        System.out.printf("[%tT.%<tL] [%s] READ %d bytes: %s%n",
+//                System.currentTimeMillis(),
+//                Thread.currentThread().getName(),
+//                wire.length,
+//                showHexVal(wire));
 
         // Format checks:
         if (wire.length == 0) {
@@ -63,7 +76,20 @@ public class Protocol {
 
     // Writes a message's 8 bytes to a socket stream (caller flushes).
     public static void writeMessage(OutputStream out, Message m) throws IOException {
+        // debug trace prints
+//        byte[] bytes = m.toBytes();
+//        System.out.printf("[%tT.%<tL] [%s] WRITE %d bytes: %s%n",
+//                System.currentTimeMillis(),
+//                Thread.currentThread().getName(),
+//                bytes.length,
+//                showHexVal(bytes));
+
         out.write(m.toBytes());
         out.flush();
+    }
+
+    // converts message to hex bytes, currently exclusively used for debugging
+    private static String showHexVal(byte[] b) {
+        return (HexFormat.of().formatHex(b));
     }
 }

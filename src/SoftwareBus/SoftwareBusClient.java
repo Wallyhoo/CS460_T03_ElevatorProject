@@ -19,7 +19,7 @@ public class SoftwareBusClient implements Runnable{
     private final InputStream in;
     private final OutputStream out;
 
-    private final int id;
+    private int id = 0;
 
     private record TopicKey(int topic, int subtopic) {}
 
@@ -29,14 +29,12 @@ public class SoftwareBusClient implements Runnable{
 
     private boolean running = true;
 
-    public SoftwareBusClient(Socket socket, MessageBus bus, int id) throws IOException {
+    public SoftwareBusClient(Socket socket, MessageBus bus) throws IOException {
         this.socket = socket;
         this.bus = bus;
 
         this.in = socket.getInputStream();
         this.out = socket.getOutputStream();
-
-        this.id = id;
     }
 
     // Runs the listening loop for the connected client
@@ -48,43 +46,50 @@ public class SoftwareBusClient implements Runnable{
             while (running) {
                 try {
                     Message message = Protocol.readMessage(in);
+                    // null pointer error checking
+                    if (message == null) {
+                        throw new NullPointerException("ERROR! message is null! message must never be null!");
+                    }
                     // Handle subscription methods here:
-                    if (message.topic() == Protocol.REGISTER) {
-                        // register client id with bus
-                        System.out.printf("Received REGISTER from client %d%n", id);
-                    } else if (message.topic() == Protocol.SUBSCRIBE) {
-                        // parse subtopic byte as topic and last byte of body as subtopic
-                        int topic = message.subtopic();
-                        int subtopic = message.body()[Message.BODY_SIZE - 1] & 0xFF;
+                    switch (message.topic()) {
+                        case Protocol.REGISTER -> {
+                            // Request a new id from the router.
+                            this.id = register();
 
-                        System.out.printf("Received SUBSCRIBE from client %d: Topic %d, Subtopic %d%n", id, topic, subtopic);
+                            // Tell the client what its id is
+                            Protocol.writeMessage(out, Message.of(Protocol.REGISTER, id, 0));
+                            System.out.printf("Received REGISTER from client %d%n", id);
+                        }
+                        case Protocol.SUBSCRIBE -> {
+                            // parse subtopic byte as topic and last byte of body as subtopic
+                            int topic = message.subtopic();
+                            int subtopic = message.body()[Message.BODY_SIZE - 1] & 0xFF;
 
-                        subscribe(topic, subtopic);
+                            System.out.printf("Received SUBSCRIBE from client %d: Topic %d, Subtopic %d%n", id, topic, subtopic);
 
-                    } else if (message.topic() == Protocol.UNSUBSCRIBE) {
-                        // Similar to above but used to remove topic
-                        int topic = message.subtopic();
-                        int subtopic = message.body()[Message.BODY_SIZE - 1] & 0xFF;
+                            subscribe(topic, subtopic);
+                        }
+                        case Protocol.UNSUBSCRIBE -> {
+                            // Similar to above but used to remove topic
+                            int topic = message.subtopic();
+                            int subtopic = message.body()[Message.BODY_SIZE - 1] & 0xFF;
 
-                        System.out.printf("Received UNSUBSCRIBE from client %d: Topic %d, Subtopic %d%n", id, topic, subtopic);
+                            System.out.printf("Received UNSUBSCRIBE from client %d: Topic %d, Subtopic %d%n", id, topic, subtopic);
 
-                        unsubscribe(topic, subtopic);
+                            unsubscribe(topic, subtopic);
+                        }
+                        case Protocol.GET -> {
+                            // Parse the message and call the getMessage function
+                            int topic = message.subtopic();
+                            int subtopic = message.body()[Message.BODY_SIZE - 1] & 0xFF;
 
-                    } else if (message.topic() == Protocol.GET) {
-                        // Parse the message and call the getMessage function
-                        int topic = message.subtopic();
-                        int subtopic = message.body()[Message.BODY_SIZE - 1] & 0xFF;
+                            System.out.printf("Received GET from client %d: Topic %d, Subtopic %d%n", id, topic, subtopic);
 
-                        System.out.printf("Received GET from client %d: Topic %d, Subtopic %d%n", id, topic, subtopic);
-
-                        getMessage(topic, subtopic);
-
-                    } else if (Protocol.isCommand(message.topic())) {
-                        System.out.printf("Unknown command 0x%X from client %d%n", message.topic(), id);
-
-                    } else {
-                        // If not a special message, broadcast to all other connections
-                        publish(message);
+                            getMessage(topic, subtopic);
+                        }
+                        default ->
+                            // If not a special message, broadcast to all other connections
+                            publish(message);
                     }
 
                 } catch (IOException e) {
@@ -112,6 +117,10 @@ public class SoftwareBusClient implements Runnable{
         TopicKey key = new TopicKey(topic, subtopic);
 
         topicQueues.remove(key);
+    }
+
+    private int register() {
+        return 0;
     }
 
     private void publish(Message m) {
@@ -158,6 +167,7 @@ public class SoftwareBusClient implements Runnable{
 
     // closes i/o and socket
     public void close() throws IOException {
+        bus.removeClient(this);
         running = false; // kill while loop
         // kill i/o streams
         out.flush();

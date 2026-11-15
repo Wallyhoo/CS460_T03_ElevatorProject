@@ -115,7 +115,7 @@ Notes on the current implementation. Please let us know if any of these are issu
 ```java
 import SoftwareBus.MessageBus;
 import SoftwareBus.SoftwareBusServer;
-import SoftwareBus.Topics;
+import Utilities.Topics;
 import Utilities.Message;
 import Utilities.Protocol;
 
