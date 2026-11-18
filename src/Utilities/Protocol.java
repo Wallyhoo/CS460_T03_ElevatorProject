@@ -11,12 +11,12 @@ import java.util.HexFormat;
  * Every frame is a fixed 8-byte Message. Byte 0 tells the bus what the frame is:
  * a value of 0xF0 or higher is a command, anything lower is a topic, and the
  * frame is published to every other connection. Commands carry the target topic
- * in byte 1 and the target subtopic in the last byte of the body. Only GET gets
+ * in byte 1 and the target subtopic in the last byte of the body. REGISTER and GET receive
  * a response; TCP already guarantees delivery, so there are no ACKs.
  * <pre>
  *  REQUEST                         RESPONSE
  *  (publish)   8-byte message      none
- *  REGISTER    (no payload)        none
+ *  REGISTER    (no payload)        REGISTER, ID (1-255) in byte 1; 0 = failed
  *  SUBSCRIBE   topic, subtopic     none
  *  UNSUBSCRIBE topic, subtopic     none
  *  GET         topic, subtopic     next queued message   or   NO_MESSAGE

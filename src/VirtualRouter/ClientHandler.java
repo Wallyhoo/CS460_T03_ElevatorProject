@@ -43,8 +43,7 @@ public class ClientHandler implements Runnable{
 
                 // Check if message is registration:
                 if (message.topic() == Protocol.REGISTER) {
-                    long requestID = message.value();
-                    int id = router.registerDevice();
+                    // Buses handle REGISTER themselves, they never forward internal IDs to other buses
                 } else {
                     router.broadcast(message, this);
                 }

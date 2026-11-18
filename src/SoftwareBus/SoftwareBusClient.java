@@ -53,12 +53,13 @@ public class SoftwareBusClient implements Runnable{
                     // Handle subscription methods here:
                     switch (message.topic()) {
                         case Protocol.REGISTER -> {
-                            // Request a new id from the router.
                             this.id = register();
-
-                            // Tell the client what its id is
                             Protocol.writeMessage(out, Message.of(Protocol.REGISTER, id, 0));
-                            System.out.printf("Received REGISTER from client %d%n", id);
+                            if (id == 0) {
+                                System.out.println("REGISTER failed: no IDs available");
+                            } else {
+                                System.out.printf("Registered client with ID %d%n", id);
+                            }
                         }
                         case Protocol.SUBSCRIBE -> {
                             // parse subtopic byte as topic and last byte of body as subtopic
@@ -99,7 +100,9 @@ public class SoftwareBusClient implements Runnable{
         } catch (IOException e) {
             System.out.println("Client connection error: " + e.getMessage());
         } finally {
-            // Remove client upon disconnect
+            if (id != 0) {
+                bus.deregisterDevice(id);
+            }
             bus.removeClient(this);
         }
     }
@@ -120,7 +123,14 @@ public class SoftwareBusClient implements Runnable{
     }
 
     private int register() {
-        return 0;
+        if (id != 0) {
+            return id;              // already registered: keep the same ID
+        }
+        try {
+            return bus.registerDevice();
+        } catch (IllegalStateException e) {
+            return 0;               // no IDs left; 0 tells the component it failed
+        }
     }
 
     private void publish(Message m) {

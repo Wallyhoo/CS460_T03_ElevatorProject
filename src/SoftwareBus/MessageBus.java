@@ -1,5 +1,6 @@
 package SoftwareBus;
 
+import Utilities.DeviceRegister;
 import Utilities.Message;
 
 import java.util.Set;
@@ -8,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MessageBus {
     private final Set<SoftwareBusClient> clients = ConcurrentHashMap.newKeySet();
     private final Set<RouterLink> links = ConcurrentHashMap.newKeySet();
+    private final DeviceRegister deviceRegister = new DeviceRegister();
 
     public void addClient(SoftwareBusClient client) {
         clients.add(client);
@@ -23,6 +25,15 @@ public class MessageBus {
 
     public void removeLink(RouterLink link) {
         links.remove(link);
+    }
+
+    // Unique within this bus. Throws IllegalStateException if all IDs are in use.
+    public int registerDevice() {
+        return deviceRegister.register();
+    }
+
+    public void deregisterDevice(int id) {
+        deviceRegister.deregister(id);
     }
 
     public void broadcastFromClient(Message message, SoftwareBusClient sender) {

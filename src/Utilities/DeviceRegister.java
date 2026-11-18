@@ -1,4 +1,4 @@
-package VirtualRouter;
+package Utilities;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -8,7 +8,7 @@ public class DeviceRegister {
     private final Set<Integer> activeIds = new HashSet<>(); // Currently assigned IDs
     private final TreeSet<Integer> freeIds = new TreeSet<>(); // Inactive IDs sorted least to greatest
 
-    private final int MAX_ID = 10000;
+    private final int MAX_ID = 255;
     private int nextId = 1;
 
     public synchronized int register() {

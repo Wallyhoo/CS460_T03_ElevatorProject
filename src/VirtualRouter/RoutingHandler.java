@@ -1,5 +1,6 @@
 package VirtualRouter;
 
+import Utilities.DeviceRegister;
 import Utilities.Message;
 
 import java.io.IOException;
