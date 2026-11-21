@@ -84,8 +84,9 @@ public class SoftwareBusClient implements Runnable{
                             int topic = message.subtopic();
                             int subtopic = message.body()[Message.BODY_SIZE - 1] & 0xFF;
 
-                            System.out.printf("Received GET from client %d: Topic %d, Subtopic %d%n", id, topic, subtopic);
-
+                            if (MessageBus.DEBUG) {
+                                System.out.printf("Received GET from client %d: Topic %d, Subtopic %d%n", id, topic, subtopic);
+                            }
                             getMessage(topic, subtopic);
                         }
                         default ->
@@ -137,24 +138,21 @@ public class SoftwareBusClient implements Runnable{
         bus.broadcastFromClient(m, this);
     }
 
-    // Takes a message and puts it in the correct queue
+    // Puts a message in every subscription queue it matches.
+    // Subtopic 0 is a wildcard on either side: a subscription with subtopic 0 gets
+    // every elevator, and a message published with subtopic 0 reaches every subscription.
+    // If a queue is full, the oldest message is dropped to make room for the new one.
     public void pushMessage(Message m) {
-        int topic = m.topic();
-        int subtopic = m.subtopic();
-
-        if (subtopic == 0) {
-            // Broadcast to all subscriptions for this topic
-            for (var entry : topicQueues.entrySet()) {
-                if (entry.getKey().topic() == topic) {
-                    entry.getValue().offer(m);
+        for (var entry : topicQueues.entrySet()) {
+            TopicKey key = entry.getKey();
+            if (m.matches(key.topic(), key.subtopic())) {
+                BlockingQueue<Message> queue = entry.getValue();
+                while (!queue.offer(m)) {
+                    Message dropped = queue.poll();   // full: discard the oldest
+                    if (MessageBus.DEBUG && dropped != null) {
+                        System.out.printf("Queue full for client %d, dropped oldest: %s%n", id, dropped);
+                    }
                 }
-            }
-        } else {
-            // Exact subscription
-            BlockingQueue<Message> exact = topicQueues.get(new TopicKey(topic, subtopic));
-
-            if (exact != null) {
-                exact.offer(m);
             }
         }
     }

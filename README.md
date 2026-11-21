@@ -90,13 +90,15 @@ Payload bytes are numbered from 1, as in the message catalog: payload byte 1 is 
 | **Subscribe** | `Protocol.writeMessage(out, Message.of(Protocol.SUBSCRIBE, topic, subtopic))` | nothing |
 | **Unsubscribe** | `Protocol.writeMessage(out, Message.of(Protocol.UNSUBSCRIBE, topic, subtopic))` | nothing |
 | **Get next message** | `Protocol.writeMessage(out, Message.of(Protocol.GET, topic, subtopic))`<br>then `Message m = Protocol.readMessage(in)` | Exactly one message: the oldest queued one for that subscription, or a message whose `topic()` is `Protocol.NO_MESSAGE` if the queue is empty |
-| **Register** | *Not implemented yet. Don't send REGISTER.* | Nothing useful yet. ID assignment hasn't been built, so the bus currently replies with a placeholder REGISTER message (ID 0). If you send REGISTER anyway, read that reply with `Protocol.readMessage(in)` right away. Otherwise it will show up as the answer to your next GET. |
+| **Register** | `Protocol.writeMessage(out, Message.of(Protocol.REGISTER, 0, 0))`<br>then `int id = Protocol.readMessage(in).subtopic()` | One REGISTER message with your ID (1–255) in the subtopic. IDs are unique within your bus; 0 means registration failed. Registering again on the same connection returns the same ID. Always read the reply right after sending REGISTER, or it will show up as the answer to your next GET. |
 
 ### Notes
 
 Notes on the current implementation. Please let us know if any of these are issues for you and if you need changes made.
 
-- **GET is the only request that gets a reply.** (REGISTER also gets a placeholder reply; see the table above.) Messages are pulled, not pushed: the bus queues messages for each of your subscriptions, and you collect them by sending GET until you get `NO_MESSAGE`.
+- **REGISTER and GET are the only requests that gets a reply.** Messages are pulled, not pushed: the bus queues messages for each of your subscriptions, and you collect them by sending GET until you get `NO_MESSAGE`.
+- **An ID belongs to one connection** If a component disconnects and reconnects, it registers again and may get a different number. Freed IDs are reused lowest-first.
+- **Two software buses can hand out the same ID** IDs are only relevant within one software bus, they are not coordinated globally via the virtual router.
 - **`readMessage` returns `null` when the bus closes the connection.** Check for it before using the result.
 - **Subscribe first.** The bus only queues messages for subscriptions that already exist. Anything published before you subscribed is gone.
 - **You don't receive your own messages.** The bus delivers to every other connection. Give your control software and each emulated device their own socket, so they hear each other.

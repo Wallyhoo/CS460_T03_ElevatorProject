@@ -7,6 +7,12 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MessageBus {
+
+    // Per-message logging (publishes, GETs, router traffic). Off by default because
+    // polling clients generate thousands of lines. Turn on with MessageBus.DEBUG = true
+    // or by starting Java with -Dbus.debug=true
+    public static volatile boolean DEBUG = Boolean.getBoolean("bus.debug");
+
     private final Set<SoftwareBusClient> clients = ConcurrentHashMap.newKeySet();
     private final Set<RouterLink> links = ConcurrentHashMap.newKeySet();
     private final DeviceRegister deviceRegister = new DeviceRegister();
@@ -37,11 +43,9 @@ public class MessageBus {
     }
 
     public void broadcastFromClient(Message message, SoftwareBusClient sender) {
-        int topic = message.topic();
-        int subtopic = message.subtopic();
-        long value = message.value();
-
-        System.out.printf("Broadcast from client: Topic %d, Subtopic %d, Value %d%n", topic, subtopic, value);
+        if (DEBUG) {
+            System.out.println("Broadcast from client: " + message);
+        }
 
         for (SoftwareBusClient client : clients) {
             if (client == sender) {
@@ -57,12 +61,9 @@ public class MessageBus {
     }
 
     public void broadcastFromRouter(Message message, RouterLink sender) {
-        int topic = message.topic();
-        int subtopic = message.subtopic();
-        long value = message.value();
-
-        System.out.printf("Broadcast from router: Topic %d, Subtopic %d, Value %d%n", topic, subtopic, value);
-
+        if (DEBUG) {
+            System.out.println("Broadcast from router: " + message);
+        }
         for (SoftwareBusClient client : clients) {
             client.pushMessage(message);
         }
