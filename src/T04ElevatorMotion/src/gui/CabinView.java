@@ -1,7 +1,7 @@
 package T04ElevatorMotion.src.gui;
 
-import api.CabinAssemblyAPI;
-import api.ShaftSpec;
+import T04ElevatorMotion.src.api.CabinAssemblyAPI;
+import T04ElevatorMotion.src.api.ShaftSpec;
 import java.util.function.IntSupplier;
 
 /** Everything the GUI needs to draw one cabin. Read-only.

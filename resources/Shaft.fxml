@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.shape.Rectangle?>
 
-<Pane fx:id="world" maxWidth="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ShaftView">
+<Pane fx:id="world" maxWidth="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="T04ElevatorMotion.src.gui.ShaftView">
     <children>
         <Rectangle fx:id="shaft" arcHeight="5.0" arcWidth="5.0" fill="#1f96ff00" height="479.0" layoutX="50.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
         <Group fx:id="cabinAssembly" layoutX="70.0" layoutY="147.0">

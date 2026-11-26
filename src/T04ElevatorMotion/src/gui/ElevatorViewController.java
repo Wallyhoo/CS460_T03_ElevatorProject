@@ -1,7 +1,7 @@
 package T04ElevatorMotion.src.gui;
 
-import api.CabinSnapshot;
-import api.ShaftSpec;
+import T04ElevatorMotion.src.api.CabinSnapshot;
+import T04ElevatorMotion.src.api.ShaftSpec;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

@@ -1,6 +1,6 @@
 package T02ButtonPanels.java.Panel.FloorPanel;
 
-import Panel.Direction;
+import T02ButtonPanels.java.Panel.Direction;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;

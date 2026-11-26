@@ -1,6 +1,6 @@
 package T04ElevatorMotion.src.api;
 
-import api.Direction;
+import T04ElevatorMotion.src.api.Direction;
 
 /**
  * Defines commands for starting, stopping, and stepping the motor.

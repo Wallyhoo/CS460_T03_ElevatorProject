@@ -1,6 +1,6 @@
 package T04ElevatorMotion.src.gui;
 
-import api.ShaftSpec;
+import T04ElevatorMotion.src.api.ShaftSpec;
 
 /** Turns feet along the shaft into pixels in the drawing, for one shaft specification. */
 public final class ViewScale {

@@ -2,7 +2,7 @@ package T04ElevatorMotion.src.bus;
 
 import java.util.*;
 import Utilities.Message;
-import bus.BusMessageDispatcher;
+import T04ElevatorMotion.src.bus.BusMessageDispatcher;
 
 /**
  * In-memory stand-in for the software bus. Safe to use from several threads.

@@ -1,9 +1,9 @@
 package T04ElevatorMotion.src.sim;
 
-import api.CabinSnapshot;
-import api.Direction;
-import api.MotionControllerAPI;
-import api.MotionState;
+import T04ElevatorMotion.src.api.CabinSnapshot;
+import T04ElevatorMotion.src.api.Direction;
+import T04ElevatorMotion.src.api.MotionControllerAPI;
+import T04ElevatorMotion.src.api.MotionState;
 
 /**
  * Motion engine for one elevator car (MSM Section 3).

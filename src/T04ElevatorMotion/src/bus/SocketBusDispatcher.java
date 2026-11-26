@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import Utilities.Message;
-import bus.BusMessageDispatcher;
+import T04ElevatorMotion.src.bus.BusMessageDispatcher;
 
 /**
  * Talks to Team03's real Software Bus over a TCP socket, using the same BusMessageDispatcher methods as BusStandIn.

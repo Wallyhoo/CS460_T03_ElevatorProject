@@ -1,6 +1,6 @@
 package T02ButtonPanels.java.Panel.ElevatorPanel;
 
-import Panel.Direction;
+import T02ButtonPanels.java.Panel.Direction;
 import javafx.animation.PauseTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

@@ -1,6 +1,6 @@
 package T04ElevatorMotion.src.sim;
 
-import sim.MotionEngine;
+import T04ElevatorMotion.src.sim.MotionEngine;
 
 /**
  * Floor sensor logic (MSM Section 3.6). Every floor has its own sensor zone, 0.5 ft tall

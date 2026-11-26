@@ -1,8 +1,8 @@
 package T02ButtonPanels.java.Panel.ElevatorPanel;
 
-import Panel.Direction;
-import Panel.ElevatorPanel.ElevatorPanelGUI;
-import Panel.SoundEffects;
+import T02ButtonPanels.java.Panel.Direction;
+import T02ButtonPanels.java.Panel.ElevatorPanel.ElevatorPanelGUI;
+import T02ButtonPanels.java.Panel.SoundEffects;
 import javafx.scene.Node;
 
 import java.util.Objects;

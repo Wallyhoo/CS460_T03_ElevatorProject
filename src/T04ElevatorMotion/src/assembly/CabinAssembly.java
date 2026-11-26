@@ -1,9 +1,9 @@
 package T04ElevatorMotion.src.assembly;
 
-import bus.BusCabinGateway;
-import bus.BusMessageDispatcher;
-import manager.TripController;
-import sim.MotionEngine;
+import T04ElevatorMotion.src.bus.BusCabinGateway;
+import T04ElevatorMotion.src.bus.BusMessageDispatcher;
+import T04ElevatorMotion.src.manager.TripController;
+import T04ElevatorMotion.src.sim.MotionEngine;
 
 /**
  * One complete elevator car: motion engine, trip controller and bus gateway.

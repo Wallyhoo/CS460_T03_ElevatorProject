@@ -1,8 +1,8 @@
 package T02ButtonPanels.java.Panel.FloorPanel;
 
-import Panel.Direction;
-import Panel.FloorPanel.FloorPanelGUI;
-import Panel.SoundEffects;
+import T02ButtonPanels.java.Panel.Direction;
+import T02ButtonPanels.java.Panel.FloorPanel.FloorPanelGUI;
+import T02ButtonPanels.java.Panel.SoundEffects;
 import javafx.scene.Node;
 
 import javax.swing.*;

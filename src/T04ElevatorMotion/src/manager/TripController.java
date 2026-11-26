@@ -1,8 +1,8 @@
 package T04ElevatorMotion.src.manager;
 
-import api.Direction;
-import api.MotionControllerAPI;
-import sim.MotionEngine;
+import T04ElevatorMotion.src.api.Direction;
+import T04ElevatorMotion.src.api.MotionControllerAPI;
+import T04ElevatorMotion.src.sim.MotionEngine;
 
 /**
  * Converts floor requests and cabin state into motor-control decisions.

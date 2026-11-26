@@ -1,8 +1,8 @@
 package T04ElevatorMotion.src.gui;
 
-import api.CabinSnapshot;
-import api.ShaftSpec;
-import gui.ViewScale;
+import T04ElevatorMotion.src.api.CabinSnapshot;
+import T04ElevatorMotion.src.api.ShaftSpec;
+import T04ElevatorMotion.src.gui.ViewScale;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.layout.Pane;

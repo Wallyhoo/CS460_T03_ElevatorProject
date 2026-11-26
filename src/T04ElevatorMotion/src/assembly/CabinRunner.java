@@ -1,7 +1,7 @@
 package T04ElevatorMotion.src.assembly;
 
-import manager.FloorSequencer;
-import manager.SimulationManager;
+import T04ElevatorMotion.src.manager.FloorSequencer;
+import T04ElevatorMotion.src.manager.SimulationManager;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

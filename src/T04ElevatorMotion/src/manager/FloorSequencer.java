@@ -1,6 +1,6 @@
 package T04ElevatorMotion.src.manager;
 
-import manager.TripController;
+import T04ElevatorMotion.src.manager.TripController;
 
 /**
  * This is a demo script
