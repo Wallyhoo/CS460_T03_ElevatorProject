@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Group?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ElevatorViewController">
+   <right>
+      <VBox prefHeight="520.0" prefWidth="189.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="currentFloor" text="currentFloor" />
+            <Label fx:id="motionState" text="motionState" />
+            <Label fx:id="speed" text="speed" />
+            <Label fx:id="acceleration" text="acceleration" />
+            <Label fx:id="deceleration" text="deceleration" />
+            <Label fx:id="cruisingSpeed" text="cruisingSpeed" />
+            <ToggleButton fx:id="viewMode" mnemonicParsing="false" text="viewMode" />
+            <ComboBox fx:id="elevatorSelector" prefWidth="150.0" promptText="elevatorSelector" />
+            <Label fx:id="speedScaleLabel" text="Speed Slider" />
+            <Slider fx:id="speedSlider" orientation="VERTICAL" />
+         </children>
+      </VBox>
+   </right>
+   <bottom>
+      <LineChart fx:id="speedChart" animated="false" createSymbols="false" prefHeight="200.0" BorderPane.alignment="CENTER">
+        <xAxis>
+          <NumberAxis side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis side="LEFT" />
+        </yAxis>
+      </LineChart>
+   </bottom>
+   <center>
+      <StackPane fx:id="viewport" minHeight="400.0" minWidth="400.0" prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>

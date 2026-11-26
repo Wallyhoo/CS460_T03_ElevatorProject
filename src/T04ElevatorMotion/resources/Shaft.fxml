@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Group?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Rectangle?>
+
+<Pane fx:id="world" maxWidth="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ShaftView">
+    <children>
+        <Rectangle fx:id="shaft" arcHeight="5.0" arcWidth="5.0" fill="#1f96ff00" height="479.0" layoutX="50.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
+        <Group fx:id="cabinAssembly" layoutX="70.0" layoutY="147.0">
+            <children>
+                <Rectangle fx:id="gondola" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="160.0" layoutY="23.0" stroke="BLACK" strokeType="INSIDE" width="160.0" />
+                <Rectangle fx:id="ceilingSensorRight" arcHeight="5.0" arcWidth="5.0" fill="ORANGE" height="11.0" layoutX="148.0" layoutY="12.0" stroke="BLACK" strokeType="INSIDE" width="12.0" />
+                <Rectangle fx:id="floorSensorRight" arcHeight="5.0" arcWidth="5.0" fill="ORANGE" height="11.0" layoutX="148.0" layoutY="183.0" stroke="BLACK" strokeType="INSIDE" width="12.0" />
+                <Rectangle fx:id="motor" arcHeight="5.0" arcWidth="5.0" height="24.0" layoutX="49.0" stroke="BLACK" strokeType="INSIDE" width="62.0" />
+                <Rectangle fx:id="ceilingSensorLeft" arcHeight="5.0" arcWidth="5.0" fill="ORANGE" height="11.0" layoutX="2.0" layoutY="12.0" stroke="BLACK" strokeType="INSIDE" width="12.0" />
+                <Rectangle fx:id="floorSensorLeft" arcHeight="5.0" arcWidth="5.0" fill="ORANGE" height="11.0" layoutX="2.0" layoutY="183.0" stroke="BLACK" strokeType="INSIDE" width="12.0" />
+                <Rectangle fx:id="doorOpening" arcHeight="5.0" arcWidth="5.0" fill="#7c838a" height="140.0" layoutX="40.0" layoutY="43.0" stroke="BLACK" strokeType="INSIDE" width="80.0" />
+                <Rectangle fx:id="doorLeft" arcHeight="5.0" arcWidth="5.0" fill="#bdc3c9" height="140.0" layoutX="40.0" layoutY="43.0" stroke="BLACK" strokeType="INSIDE" width="40.0" />
+                <Rectangle fx:id="doorRight" arcHeight="5.0" arcWidth="5.0" fill="#bdc3c9" height="140.0" layoutX="80.0" layoutY="43.0" stroke="BLACK" strokeType="INSIDE" width="40.0" />
+            </children>
+        </Group>
+    </children>
+</Pane>
